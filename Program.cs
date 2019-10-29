@@ -5,27 +5,38 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using ConsoleApiCall.Models;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
-namespace ApiTest
+namespace ConsoleApiCall
 {
   class Program
   {
     static void Main(string[] args)
     {
-      DotNetEnv.Env.Load();
-      string key = System.Environment.GetEnvironmentVariable("API_KEY");
-      var apiCallTask = ApiHelper.ApiCall(key);
-      var result = apiCallTask.Result;
-      JObject jsonResponse = JsonConvert.DeserializeObject<JObject>(result);
-      List<Article> articleList = JsonConvert.DeserializeObject<List<Article>>(jsonResponse["results"].ToString());
-      foreach (Article article in articleList)
-            {
-                Console.WriteLine($"Section: {article.Section}");
-                Console.WriteLine($"Title: {article.Title}");
-                Console.WriteLine($"Abstract: {article.Abstract}");
-                Console.WriteLine($"Url: {article.Url}");
-                Console.WriteLine($"Byline: {article.Byline}");
-            }
+        DotNetEnv.Env.Load();
+        string key = System.Environment.GetEnvironmentVariable("API_KEY");
+        var apiCallTask = ApiHelper.ApiCall(key);
+        var result = apiCallTask.Result;
+        JObject jsonResponse = JsonConvert.DeserializeObject<JObject>(result);
+        List<Article> articleList = JsonConvert.DeserializeObject<List<Article>>(jsonResponse["results"].ToString());
+        foreach (Article article in articleList)
+                {
+                    Console.WriteLine($"Section: {article.Section}");
+                    Console.WriteLine($"Title: {article.Title}");
+                    Console.WriteLine($"Abstract: {article.Abstract}");
+                    Console.WriteLine($"Url: {article.Url}");
+                    Console.WriteLine($"Byline: {article.Byline}");
+                }
+
+        var host = new WebHostBuilder()
+        .UseKestrel()
+        .UseContentRoot(Directory.GetCurrentDirectory())
+        .UseIISIntegration()
+        .UseStartup<Startup>()
+        .Build();
+
+        host.Run();
     }
   }
 
