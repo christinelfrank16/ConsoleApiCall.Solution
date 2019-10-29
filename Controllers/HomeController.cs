@@ -7,7 +7,7 @@ namespace ConsoleApiCall.Controllers
     {
         private string _apikey = System.Environment.GetEnvironmentVariable("API_KEY");
         [Route("/")]
-        public IActionResult Index()
+        public ActionResult Index()
         {
             var allArticles = Article.GetArticles(_apikey);
             return View(allArticles);
