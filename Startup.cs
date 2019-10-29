@@ -11,6 +11,7 @@ namespace ConsoleApiCall
     {
         public Startup(IHostingEnvironment env)
         {
+            DotNetEnv.Env.Load();
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json");
